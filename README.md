@@ -1,27 +1,24 @@
 # yeneyeneta
 
-full source code for yeneyeneta.com written in php mvc architecture.
+A question asking and answering platform like #Quora written in codeigniter Version 3.1.9.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+A simple 
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+You need PHP 7.x,  codeigniter Version 3.1.9 installed
 
 ```
-Give examples
+
 ```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
+Replace the application folder with yeneyeneta application folder.
 ```
-Give the example
+
 ```
 
 And repeat
