@@ -123,10 +123,7 @@
                  #'password' => $enc_password,
                  'user_image' => $user_image,
                  'gender' => $this->input->post('user_gender'),
-                 'bio' => $this->input->post('bio'),      
-                 'firstname' => $this->input->post('firstname'),  
-                 'lastname' => $this->input->post('lastname'),  
-                 'grade' => $this->input->post('grade')          
+                 'bio' => $this->input->post('bio')            
             );
              $this->db->where('id', $this->input->post('user_id'));
              return $this->db->update('users', $data);

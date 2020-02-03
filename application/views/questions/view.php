@@ -369,11 +369,6 @@ endif; ?>
 
         <?php endif; ?>
 
-         <!--   <a class="d-inline-block" href="#">
-                <i class="fa fa-fw fa-download"></i>
-                Download
-                    
-            </a>  -->
         </div>
         <!--        Answer collapseable  -->
         
@@ -390,11 +385,6 @@ endif; ?>
                         <a href="#"><?php echo $answer['username']; ?></a>
                     </h6><p><?php echo $answer['userstatus']; ?> at <?php echo $answer['school']; ?></p>
                     <?php echo $answer['answer']; ?>
-                    <ul class="list-inline mb-0">
-                        <li class="list-inline-item">
-                            <a href="#">download</a>
-                        </li>
-                    </ul>
                 <br>
             </div>
         </div>

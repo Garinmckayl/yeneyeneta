@@ -70,19 +70,6 @@
                             <input type="file" name="user_image" id="fileUpload" maxlength="32" class="form-control show-for-sr" placeholder="Change your profile pic*">
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="examname">First name</label>
-                                <input type="text" class="form-control" name="firstname" id="examname" placeholder="" value="<?php echo $user['firstname']; ?>" required>
-                                <div class="invalid-feedback">Valid First name is required.</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="examsubject">Last name</label>
-                                <input type="text" class="form-control" name="lastname" id="examsubject" placeholder="" value="<?php echo $user['lastname']; ?>" required>
-                                <div class="invalid-feedback">Valid Last name is required.</div>
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <label>Your Title</label>
                             <select name="user_title" class="form-control" required>
@@ -117,7 +104,7 @@
                             </select>
                         </div>
 
-                     <div class="form-group">
+<!--                      <div class="form-group">
                         <label>Your Grade</label>
                         <select name="grade" id="input-status" class="form-control" required>
                             <option selected><?php echo $user['grade']; ?></option>
@@ -140,7 +127,7 @@
                               <option value="universty-fifth-year" <?php echo set_select('grade', 'universty-fifth-year'); ?>>universty fifth year</option>
                               <option value="universty-sixth-year" <?php echo set_select('grade', 'universty-sixth-year'); ?>>universty sixth year</option>
                         </select>
-                    </div>
+                    </div> -->
 
                         <input type="submit" name="save" value="Save" class="btn btn-orange btn-lg btn-block">
                         <div class="form-group"></div>
