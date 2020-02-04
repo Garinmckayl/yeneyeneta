@@ -237,10 +237,10 @@ endif; ?>
               </div>
           </div>
                     <?php if($this->session->userdata('user_id')): ?>
-                        <img class="img-fluid img-profile rounded-circle smallimg img-right" src="<?php echo base_url()?>assets/images/avatar/<?php echo $user['user_image']; ?>" alt=""> <span class="navuser d-none d-lg-block"><i class="fa fa-user"></i> <?php echo $this->session->userdata('username'); ?></span>
+                        <!-- <img class="img-fluid img-profile rounded-circle smallimg img-right" src="<?php echo base_url()?>assets/images/avatar/<?php echo $user['user_image']; ?>" alt=""> <span class="navuser d-none d-lg-block"><i class="fa fa-user"></i> <?php echo $this->session->userdata('username'); ?></span>
                         <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
                             <span class="navbar-toggler-icon"></span>
-                        </button>
+                        </button> -->
                     <?php endif; ?>
                 </nav>
                 <div class="nav-scroller bg-white box-shadow">
