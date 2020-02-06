@@ -1,14 +1,9 @@
 ###################
-What is CodeIgniter
+Yeneyeneta
 ###################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Yeneyeneta is an Application built with codeigniter Development Framework.
+It is question asking and answering platform.
 
 *******************
 Release Information
@@ -68,3 +63,52 @@ Acknowledgement
 
 The CodeIgniter team would like to thank EllisLab, all the
 contributors to the CodeIgniter project and you, the CodeIgniter user.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Yeneyeneta
+
+Yeneyeneta is an Application built with codeigniter Development Framework.
+It is question asking and answering platform.
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+
+### Prerequisites
+
+What things you need to install the software and how to install them
+
+```
+PHP 7
+mysql
+apache
+```
+In development i suggest installing xampp.
+
+### Installing
+
+
+
+* **clone in the htdocs folder directly**
+* **navigate localhost/yeneyeneta**
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
