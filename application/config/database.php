@@ -75,11 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'yeneta',
-	'dbdriver' => 'mysqli',
+	'hostname' => 'ec2-34-233-226-84.compute-1.amazonaws.com',
+	'username' => 'ixikbgppocxpzv',
+	'password' => 'acdf12d2faa8599b542b06b8282e5fd004321fa00861e47ec82548d913625fdb',
+	'database' => 'd5398sh9mbn136',
+	'dbdriver' => 'postgre',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
