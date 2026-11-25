@@ -112,21 +112,33 @@
 
 
 
-     public function update_account($user_image)
+     public function update_account($user_image, $password_hash = NULL)
           {
-            #$enc_password = md5($this->input->post('password'));
              $data = array(
-                 #'username' => $this->input->post('username'),
                  'usertitle' => $this->input->post('user_title'),
                  'school' => $this->input->post('school'),
-                 #'email' => $this->input->post('email'),
-                 #'password' => $enc_password,
                  'user_image' => $user_image,
                  'gender' => $this->input->post('user_gender'),
                  'bio' => $this->input->post('bio')            
             );
+             if($password_hash !== NULL)
+                {
+                    $data['password'] = $password_hash;
+                }
              $this->db->where('id', $this->input->post('user_id'));
              return $this->db->update('users', $data);
+          }
+
+     public function get_user_by_username($username)
+          {
+             $query = $this->db->get_where('users', array('username' => $username));
+             return $query->row_array();
+          }
+
+     public function update_password($user_id, $password_hash)
+          {
+             $this->db->where('id', $user_id);
+             return $this->db->update('users', array('password' => $password_hash));
           }    
 
     public function get_random_users()

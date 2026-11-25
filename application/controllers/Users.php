@@ -41,7 +41,7 @@ class Users extends CI_controller
            			$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]|alpha_dash|callback_check_username_exists');
            			$this->form_validation->set_rules('school', 'school', 'required');
                     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|callback_check_email_exists');
-                    $this->form_validation->set_rules('password', 'password', 'trim|required|min_length[6]');
+                    $this->form_validation->set_rules('password', 'password', 'required|callback_check_password_strength');
 
                  if($this->form_validation->run() === FALSE)
                    {
@@ -56,8 +56,8 @@ class Users extends CI_controller
         		   } 
                    else 
                    {
-        				// Encrypt password
-            			$enc_password = md5($this->input->post('password'));
+        				// Hash password (bcrypt via password_hash)
+            			$enc_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
             			$this->user_model->register($enc_password);
             			// Set message
             			$this->session->set_flashdata('user_registered', 'You are now registered and can log in');
@@ -85,6 +85,21 @@ class Users extends CI_controller
             {
 				return false;
 			}
+		}
+
+	// password strength: at least 8 characters, containing both letters and numbers
+	public function check_password_strength($password)
+        {
+			$this->form_validation->set_message('check_password_strength', 'Password must be at least 8 characters and contain both letters and numbers');
+			return $this->is_strong_password($password);
+		}
+
+	protected function is_strong_password($password)
+        {
+			return is_string($password)
+				&& strlen($password) >= 8
+				&& preg_match('/[A-Za-z]/', $password) === 1
+				&& preg_match('/[0-9]/', $password) === 1;
 		}
 
 	public function check_email_exists($email)
@@ -115,8 +130,8 @@ class Users extends CI_controller
                  else
                 {
                          $username = $this->input->post('username');
-                         $password = md5($this->input->post('password')); 
-                         $user_id = $this->user_model->login($username, $password);
+                         $password = $this->input->post('password');
+                         $user_id = $this->authenticate($username, $password);
                          if($user_id)
                          {  
                                 //$data['user'] = $this->user_model->get_user($username);
@@ -156,6 +171,31 @@ class Users extends CI_controller
                         }		
         		}
         }
+
+
+	// verify credentials; legacy md5 hashes are accepted once and upgraded to password_hash()
+	protected function authenticate($username, $password)
+        {
+			$user = $this->user_model->get_user_by_username($username);
+			if(empty($user))
+            {
+				return false;
+			}
+
+			if(password_verify($password, $user['password']))
+            {
+				return $user['id'];
+			}
+
+			// legacy md5 hash
+			if(strlen($user['password']) === 32 && hash_equals($user['password'], md5($password)))
+            {
+				$this->user_model->update_password($user['id'], password_hash($password, PASSWORD_DEFAULT));
+				return $user['id'];
+			}
+
+			return false;
+		}
 
 
   //   logout       
@@ -226,8 +266,18 @@ class Users extends CI_controller
 
     public function update()
         {
+            if(!$this->session->userdata('logged_in') || $this->session->userdata('user_id') != $this->input->post('user_id'))
+                {
+                    redirect('questions');
+                }
 
             $this->form_validation->set_rules('school', 'school', 'required');
+            // password is optional on edit; when supplied it must meet the strength rules
+            $new_password = $this->input->post('password');
+            if($new_password !== NULL && $new_password !== '')
+                {
+                    $this->form_validation->set_rules('password', 'password', 'callback_check_password_strength');
+                }
             $user_id = $this->input->post('user_id');
             $data['user'] = $this->user_model->get_user_detail($user_id);
             if($this->form_validation->run() === FALSE)
@@ -270,7 +320,8 @@ class Users extends CI_controller
                            $user_image = $data['user']['user_image'];
                     }
 
-                        $this->user_model->update_account($user_image);
+                        $password_hash = ($new_password !== NULL && $new_password !== '') ? password_hash($new_password, PASSWORD_DEFAULT) : NULL;
+                        $this->user_model->update_account($user_image, $password_hash);
                         $this->session->set_flashdata('account_updated', 'your account has been updated');
                         redirect('questions');
                     
