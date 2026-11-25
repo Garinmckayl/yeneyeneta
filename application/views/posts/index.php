@@ -546,6 +546,7 @@ echo form_close(); ?>
                         endif; ?>
                         <?php
                         echo form_open_multipart('posts/create'); ?>
+<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                         <div class="form-group">
                             <label>Title</label>
                             <input type="text" class="form-control" name="title" placeholder="Add Title" required>

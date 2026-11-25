@@ -445,7 +445,7 @@ echo form_close(); ?>
        $.ajax({
        type: "post",
        url: "<?php echo base_url('questions/search'); ?>",
-       data: {search:searchval},
+       data: {search:searchval, <?php echo $this->security->get_csrf_token_name(); ?>: '<?php echo $this->security->get_csrf_hash(); ?>'},
        cache: false,
        success: function(val){
         if(val==0){
