@@ -145,7 +145,7 @@
 		
 		public function createComment($question_id)
 			{
-				$slug = $this->input->post('slug');
+				$slug = $this->input->post('slug', TRUE);
 				$data['question'] = $this->question_model->get_questions($slug);
 				// $this->form_validation->set_rules('email', 'Email', 'required');
 				// $this->form_validation->set_rules('email', 'Email', 'required');
