@@ -149,7 +149,7 @@ class Questions extends CI_Controller
                         // benchmark to show total time of search
                 $this->benchmark->mark('search_question_start');
                 $search = $this->input->post('search', TRUE);
-                $data['searchval'] = $search = $this->input->post('search');
+                $data['searchval'] = $search = $this->input->post('search', TRUE);
                 $data['title'] = 'search question';
                 $data['user'] = $this->user_model->get_user($this->session->userdata('username'));
                 $data['search'] = $this->question_model->search_question($search);
