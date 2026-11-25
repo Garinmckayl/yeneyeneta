@@ -78,11 +78,13 @@ class Question_model extends CI_Model
 		public function search_question($search)
 			{
 			    $this->db->order_by('questions.id', 'DESC');
-				$query = $this->db->query("SELECT * FROM questions
-				                            WHERE subject LIKE '%$search%'
-				                            OR author LIKE '%$search%'
-				                            OR grade LIKE '%$search%'
-				                            OR question LIKE '%$search%'");
+				$this->db->group_start();
+				$this->db->like('subject', $search);
+				$this->db->or_like('author', $search);
+				$this->db->or_like('grade', $search);
+				$this->db->or_like('question', $search);
+				$this->db->group_end();
+				$query = $this->db->get('questions');
 		       return $query->result_array();
 			}
  
@@ -90,9 +92,7 @@ class Question_model extends CI_Model
 		public function search_questionauthor($user)
 			{   
 				$this->db->order_by('questions.question_id', 'DESC');
-		        $this->db->join('questions', 'questions.user_id = users.id');
-				$query = $this->db->query("SELECT * FROM questions
-				                          WHERE author = '$user'");
+				$query = $this->db->get_where('questions', array('author' => $user));
 				return $query->result_array();
 
 			}
@@ -104,10 +104,7 @@ class Question_model extends CI_Model
 
 		public function get_questionsBY_catagory($subject)
 			{
-				$subjectc = $this->db->escape($subject);
-				$this->db->join('users', 'users.id = questions.user_id');
-				$query = $this->db->query("SELECT * FROM questions 
-					                      WHERE subject = $subjectc");
+				$query = $this->db->get_where('questions', array('subject' => $subject));
 				// $query = $this->db->get_where('questions', array('subject' => $this->db->escape($subject)));
 				return $query->result_array();
 				  //$query = $this->db->where('subject', $this->db->escape($subject));
