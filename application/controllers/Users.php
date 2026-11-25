@@ -106,6 +106,25 @@ class Users extends CI_controller
 	public	function login()
         {
     	        $data['title']='Login';
+                $ip = $this->input->ip_address();
+
+                // Reject attempts from IPs that exceeded the failure limit
+                $remaining = $this->_login_block_remaining($ip);
+                if($remaining > 0)
+                {
+                        $minutes = max(1, (int) ceil($remaining / 60));
+                        $this->session->set_flashdata('login_failed', 'Too many failed login attempts from your IP address. Please try again in ' . $minutes . ' minute(s).');
+                        if($this->input->post('page') === 'blog')
+                        {
+                            redirect('/posts');
+                        }
+                        else
+                        {
+                            redirect('home');
+                        }
+                        return;
+                }
+
                 $this->form_validation->set_rules('username', 'username', 'required');
                 $this->form_validation->set_rules('password', 'password', 'required');
                 if($this->form_validation->run() === FALSE)
@@ -119,6 +138,9 @@ class Users extends CI_controller
                          $user_id = $this->user_model->login($username, $password);
                          if($user_id)
                          {  
+                                // Successful login resets the failure counter for this IP
+                                $this->_login_clear($ip);
+
                                 //$data['user'] = $this->user_model->get_user($username);
                                 //create session
                                  $user_data = array(
@@ -142,6 +164,9 @@ class Users extends CI_controller
                          }
                         else
                         {
+                                // Record the failure against this IP
+                                $this->_login_record_failure($ip);
+
                              	// Set message
                 			$this->session->set_flashdata('login_failed', 'Login is invalid | check your username or password');
                             if($this->input->post('page') === 'blog')
@@ -155,6 +180,93 @@ class Users extends CI_controller
                              }
                         }		
         		}
+        }
+
+
+    // Login rate limiting helpers (file-based, keyed by hashed IP address)
+
+    // Max failed attempts allowed inside the window; the next attempt after this is blocked
+    const LOGIN_MAX_FAILURES = 5;
+    // Sliding window for counting failures (15 minutes)
+    const LOGIN_WINDOW = 900;
+    // How long an IP stays blocked once it exceeds the limit (15 minutes)
+    const LOGIN_BLOCK_DURATION = 900;
+
+    private function _login_attempt_file($ip)
+        {
+            return APPPATH . 'cache/login_attempts/' . md5($ip) . '.json';
+        }
+
+    private function _login_read($ip)
+        {
+            $state = array('failures' => array(), 'blocked_until' => 0);
+            $file = $this->_login_attempt_file($ip);
+            if(is_file($file))
+            {
+                $decoded = json_decode(file_get_contents($file), TRUE);
+                if(is_array($decoded))
+                {
+                    $state = array_merge($state, $decoded);
+                }
+            }
+            return $state;
+        }
+
+    private function _login_write($ip, $state)
+        {
+            $dir = APPPATH . 'cache/login_attempts/';
+            if(!is_dir($dir))
+            {
+                @mkdir($dir, 0700, TRUE);
+            }
+            file_put_contents($this->_login_attempt_file($ip), json_encode($state), LOCK_EX);
+        }
+
+    private function _login_clear($ip)
+        {
+            $file = $this->_login_attempt_file($ip);
+            if(is_file($file))
+            {
+                @unlink($file);
+            }
+        }
+
+    // Returns seconds remaining in the block, or 0 if not blocked
+    private function _login_block_remaining($ip)
+        {
+            $state = $this->_login_read($ip);
+            $remaining = (int) $state['blocked_until'] - time();
+            return $remaining > 0 ? $remaining : 0;
+        }
+
+    private function _login_record_failure($ip)
+        {
+            $now = time();
+            $state = $this->_login_read($ip);
+
+            // Keep only failures inside the sliding window, then add this one
+            $failures = array();
+            foreach((array) $state['failures'] as $timestamp)
+            {
+                if($timestamp > $now - self::LOGIN_WINDOW)
+                {
+                    $failures[] = (int) $timestamp;
+                }
+            }
+            $failures[] = $now;
+
+            $blocked_until = (int) $state['blocked_until'];
+            if(count($failures) > self::LOGIN_MAX_FAILURES)
+            {
+                // Start a block and reset the counter so the IP gets a fresh window after it expires
+                $blocked_until = $now + self::LOGIN_BLOCK_DURATION;
+                $failures = array();
+            }
+
+            $this->_login_write($ip, array(
+                'failures' => $failures,
+                'blocked_until' => $blocked_until
+            ));
         }
 
 
