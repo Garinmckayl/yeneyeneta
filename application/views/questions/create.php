@@ -13,6 +13,7 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <?php
         echo form_open_multipart('questions/add'); ?>
+<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
         <label>Add Question <?php echo $this->session->userdata('username');?></label> <a data-container="body" data-toggle="popover" data-placement="top" data-content="To make others understand your question try to make it neat and describe it well."><span><i class="fa fa-question-circle"></i></span></a><br> 
         <p class="d-block text-gray-dark text-info">This page lets you add very deep questions and questions that need explanation</p>
         <!--if there are validation errors  -->

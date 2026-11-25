@@ -102,6 +102,7 @@
                     echo validation_errors() ?>
 
                 <form action="<?php echo base_url() ?>users/register" method="post" autocomplete="off" class="needs-validation" novalidate>
+<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                   <div class="form-group">
                     <input type="text" autocomplete="off" name="username" value="<?php echo set_value('username'); ?>" class="form-control" placeholder="Username" required>
                     <div class="invalid-feedback">
@@ -270,6 +271,7 @@
                         <?php
                         endif; ?>
                         <form action="<?php base_url() ?>users/login" method="post" class="needs-validation" novalidate>
+<input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
                         <div class="form-group">
                             <input type="text" class="form-control" name="username" placeholder="Enter Username" required autofocus>
                             <div class="invalid-feedback">
